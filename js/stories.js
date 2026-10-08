@@ -112,7 +112,8 @@ function sentenceWordsHtml(text){
   return segmentSentence(text).map(function(tok){
     if (!tok.w) return esc(tok.s);
     var lvl = wordLvl(tok.w.id);
-    var tint = lvl > 0 ? ' style="background:' + levelToColor(lvl).replace('rgb(', 'rgba(').replace(')', ',.22)') + '"' : '';
+    // Hellas blue, the stronger the better the word is known (white would vanish on the card)
+    var tint = lvl > 0 ? ' style="background:rgba(13,94,175,' + (0.08 + Math.min(lvl, 100) / 100 * 0.3).toFixed(2) + ')"' : '';
     return '<span class="sent-word" data-wid="' + tok.w.id + '"' + tint + ' title="' + esc(wordInfoText(tok.w)) + '">' + esc(tok.s) + '</span>';
   }).join('');
 }
@@ -397,9 +398,9 @@ function renderStories(){
           (tryHere ? renderTryBox(st.tryResult) : '') +
           (isCurrent ? '' : '<div class="empty-note" style="padding:8px 0;">' + esc(t('storiesRatingOnlyCurrent')) + '</div>') +
           '<div class="rate-row" style="grid-template-columns:repeat(3,1fr);">' +
-            '<button class="rate-btn" style="background:' + levelToColor(4) + '" data-val="0"' + dis + '>' + esc(t('storiesUnderstandNo')) + '<span class="val">+0</span></button>' +
-            '<button class="rate-btn" style="background:' + levelToColor(35) + '" data-val="1"' + dis + '>' + esc(t('storiesUnderstandHalf')) + '<span class="val">+1</span></button>' +
-            '<button class="rate-btn" style="background:' + levelToColor(90) + '" data-val="2"' + dis + '>' + esc(t('storiesUnderstandYes')) + '<span class="val">+2</span></button>' +
+            '<button class="rate-btn" style="' + levelStyle(4) + '" data-val="0"' + dis + '>' + esc(t('storiesUnderstandNo')) + '<span class="val">+0</span></button>' +
+            '<button class="rate-btn" style="' + levelStyle(35) + '" data-val="1"' + dis + '>' + esc(t('storiesUnderstandHalf')) + '<span class="val">+1</span></button>' +
+            '<button class="rate-btn" style="' + levelStyle(90) + '" data-val="2"' + dis + '>' + esc(t('storiesUnderstandYes')) + '<span class="val">+2</span></button>' +
           '</div>' +
         '</div>' +
       '</div>';

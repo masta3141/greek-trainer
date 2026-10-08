@@ -115,23 +115,33 @@ function wordWithArticle(w){
   return (w.a ? w.a + ' ' : '') + w.w;
 }
 
-// Progress color: red (0) → yellow (25) → green (50) → blue (75+)
-function levelToColor(lvl){
-  var stops = [
-    { p: 0,   c: [192, 72, 58] },
-    { p: 25,  c: [209, 165, 58] },
-    { p: 50,  c: [91, 149, 116] },
-    { p: 75,  c: [68, 114, 168] },
-    { p: 100, c: [52, 95, 140] }
-  ];
+// Progress colour in the colours of the Greek flag: white (0) → light blue
+// (25) → medium blue (50) → Hellas blue (75+), slightly deeper at 100.
+var PROGRESS_STOPS = [
+  { p: 0,   c: [255, 255, 255] },
+  { p: 25,  c: [200, 220, 240] },
+  { p: 50,  c: [112, 160, 212] },
+  { p: 75,  c: [13, 94, 175] },
+  { p: 100, c: [8, 70, 138] }
+];
+function levelToRgb(lvl){
   var v = Math.max(0, Math.min(100, lvl));
-  var lo = stops[0], hi = stops[stops.length - 1];
-  for (var i = 0; i < stops.length - 1; i++) {
-    if (v >= stops[i].p && v <= stops[i+1].p) { lo = stops[i]; hi = stops[i+1]; break; }
+  var lo = PROGRESS_STOPS[0], hi = PROGRESS_STOPS[PROGRESS_STOPS.length - 1];
+  for (var i = 0; i < PROGRESS_STOPS.length - 1; i++) {
+    if (v >= PROGRESS_STOPS[i].p && v <= PROGRESS_STOPS[i+1].p) { lo = PROGRESS_STOPS[i]; hi = PROGRESS_STOPS[i+1]; break; }
   }
   var t = (v - lo.p) / ((hi.p - lo.p) || 1);
-  return 'rgb(' + [0, 1, 2].map(function(k){ return Math.round(lo.c[k] + (hi.c[k] - lo.c[k]) * t); }).join(',') + ')';
+  return [0, 1, 2].map(function(k){ return Math.round(lo.c[k] + (hi.c[k] - lo.c[k]) * t); });
 }
+function levelToColor(lvl){ return 'rgb(' + levelToRgb(lvl).join(',') + ')'; }
+// Readable text on that background: dark blue-grey on the light shades, white on the blues.
+function levelTextColor(lvl){
+  var c = levelToRgb(lvl);
+  var lum = (0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]) / 255;
+  return lum > 0.6 ? '#1c2b3c' : '#ffffff';
+}
+// Inline style for anything filled with a progress colour (tiles, rate buttons).
+function levelStyle(lvl){ return 'background:' + levelToColor(lvl) + ';color:' + levelTextColor(lvl) + ';'; }
 
 var toastTimer = null;
 function showToast(text){

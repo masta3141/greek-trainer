@@ -186,19 +186,18 @@
     justify-content: center;
     padding: 0 4px;
     font-family: var(--greek-font);
-    color: #fdf8ee;
+    color: var(--ink);
     white-space: nowrap;
     overflow: hidden;
     cursor: pointer;
   }
   .pool-cell .cw { overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-  .pool-cell.learned { border-color: transparent; }
   .pool-cell .lvl-badge {
     position: absolute;
     top: 2px; right: 3px;
     font-size: 8.5px; line-height: 1;
     font-family: system-ui, sans-serif; font-weight: 700;
-    color: #000;
+    color: inherit;
     opacity: .7;
   }
   .pool-cell.in-pool::before {
@@ -210,7 +209,10 @@
     color: var(--jade);
     opacity: .75;
   }
-  .pool-cell.learned.in-pool::before { color: #1f5a3c; opacity: .8; }
+  .pool-cell.learned.in-pool::before { color: inherit; opacity: .7; }
+  /* white/light tiles need an edge against the paper background */
+  .pool-cell.learned { border-color: rgba(13, 94, 175, .18); }
+  .legend-chip .prog-dot { box-shadow: 0 0 0 1px var(--hairline); }
   .pool-cell.in-streak::after {
     content: '🔥';
     position: absolute;
@@ -363,8 +365,9 @@
     font-size: 12.5px;
     font-weight: 600;
     cursor: pointer;
-    /* stays cream in both themes: the background comes from levelToColor() */
-    color: #fdf8ee;
+    /* background and text colour come from levelStyle() (Greek flag colours) */
+    color: #ffffff;
+    box-shadow: inset 0 0 0 1px rgba(13, 94, 175, .22);
     display: flex; flex-direction: column; align-items: center; gap: 3px;
   }
   .rate-btn:active { transform: scale(0.97); }

@@ -6,7 +6,7 @@
 // keep APP_SHELL in sync with the <link>/<script> tags in index.html.
 
 var CACHE_PREFIX = 'grtrain-shell-';
-var CACHE_NAME = CACHE_PREFIX + 'v4';
+var CACHE_NAME = CACHE_PREFIX + 'v5';
 var APP_SHELL = [
   'index.html',
   'css/app.css',

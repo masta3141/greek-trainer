@@ -45,7 +45,7 @@ function renderFreeCard(finished){
 function rateButtonsHtml(attr, values, labels){
   var colors = [4, 28, 58, 92];
   return values.map(function(v, i){
-    return '<button class="rate-btn" style="background:' + levelToColor(colors[i]) + '" ' + attr + '="' + v + '">' +
+    return '<button class="rate-btn" style="' + levelStyle(colors[i]) + '" ' + attr + '="' + v + '">' +
       esc(t(['rateNochmal', 'rateSchwer', 'rateGut', 'rateLeicht'][i])) + '<span class="val">' + esc(labels[i]) + '</span></button>';
   }).join('');
 }

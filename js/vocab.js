@@ -62,7 +62,7 @@ function buildGridLegend(){
   }).join('');
   var lvlChips = LVL_BUCKETS.map(function(b, i){
     return '<button class="legend-chip' + (gridFilter.lvl.indexOf(i) >= 0 ? '' : ' off') + '" data-lvl-bucket="' + i + '" title="' + esc(tf('gridFilterLvlTitle', b[0], b[1])) + '">' +
-      '<span class="dot" style="background:' + levelToColor((b[0] + b[1]) / 2) + '"></span>' + b[0] + '–' + b[1] + '</button>';
+      '<span class="dot prog-dot" style="background:' + levelToColor((b[0] + b[1]) / 2) + '"></span>' + b[0] + '–' + b[1] + '</button>';
   }).join('');
   var seg = function(m, label){ return '<button class="seg-btn' + (gridTapMode === m ? ' active' : '') + '" data-tap="' + m + '">' + esc(label) + '</button>'; };
   var row = function(label, content){ return '<div class="gf-row"><span class="gf-label">' + esc(label) + '</span><div class="gf-items">' + content + '</div></div>'; };
@@ -125,7 +125,7 @@ function wordCellMarkup(w){
   var cw = cellWord(w);
   var fsize = 'font-size:' + cellFontSize(cw.length) + 'px;';
   if (p && p.seen && lvl > 0) {
-    return '<div class="pool-cell learned' + marks + '" data-id="' + w.id + '" style="background:' + levelToColor(lvl) + ';' + ring + fsize + '" title="' + esc(title) + '">' +
+    return '<div class="pool-cell learned' + marks + '" data-id="' + w.id + '" style="' + levelStyle(lvl) + ring + fsize + '" title="' + esc(title) + '">' +
       '<span class="cw">' + esc(cw) + '</span><span class="lvl-badge">' + lvl + '</span></div>';
   }
   // Not learned yet: an empty tile — except while searching, so you can see what was found.
