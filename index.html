@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Griechisch">
+<meta name="theme-color" content="#2b5f8e">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.json">
+<title>Ελληνικά Trainer</title>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <span class="mark">Ελ</span>
+      <h1 data-i18n="appTitle">Griechisch Trainer</h1>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="btnLang" title="Language / Sprache">🇩🇪</button>
+      <button class="icon-btn" id="btnSettings" data-i18n-title="settingsTitle" title="Einstellungen">⚙</button>
+    </div>
+  </header>
+
+  <div class="view-tabs" role="tablist">
+    <button class="tab-btn" id="tabVocab" data-view="vocab" role="tab" data-i18n="tabVocab">Vokabeln</button>
+    <button class="tab-btn" id="tabCards" data-view="cards" role="tab" data-i18n="tabCards">Karten</button>
+    <button class="tab-btn" id="tabStories" data-view="stories" role="tab" data-i18n="tabStories">Geschichten</button>
+  </div>
+
+  <div class="views">
+    <section id="vocabView" class="view" style="display:none;">
+      <div class="grid-search">
+        <input type="search" id="vocabSearch" autocomplete="off" spellcheck="false"
+               data-i18n-placeholder="searchPlaceholder" placeholder="Suche: Griechisch, Umschrift oder Bedeutung">
+        <button class="legend-chip grid-filter-btn" id="btnGridFilter">Filter ▾</button>
+      </div>
+      <div class="pool-legend" id="poolLegend"></div>
+      <div class="pool-grid" id="vocabGrid"></div>
+      <p class="credits" data-i18n-html="credits"></p>
+    </section>
+
+    <section id="cardsView" class="view">
+      <div class="stats-strip" id="statsStrip"></div>
+      <main id="main"></main>
+    </section>
+
+    <section id="storiesView" class="view" style="display:none;"></section>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="overlay" id="overlay"></div>
+
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h2 data-i18n="settingsTitle">Einstellungen</h2>
+    <button class="icon-btn" id="btnCloseDrawer" aria-label="×">✕</button>
+  </div>
+
+  <div class="field">
+    <label for="inpPool" data-i18n="poolLabel">Pool-Größe (aktive Wörter insgesamt)</label>
+    <input type="number" id="inpPool" min="10" max="7378" step="10">
+  </div>
+  <div class="field">
+    <label for="inpSession" data-i18n="sessionLabel">Wörter pro Runde</label>
+    <input type="number" id="inpSession" min="4" max="200" step="1">
+    <p class="drawer-note" data-i18n="settingsNextRound">Änderungen gelten ab der nächsten Runde.</p>
+  </div>
+  <div class="field">
+    <label class="check-row">
+      <input type="checkbox" id="inpAutoSpeak">
+      <span data-i18n="autoSpeakLabel">Bei Bewertung automatisch vorlesen</span>
+    </label>
+  </div>
+  <div class="field">
+    <label for="inpVoice" data-i18n="voiceLabel">Stimme (Sprachausgabe)</label>
+    <div class="voice-row">
+      <select id="inpVoice"></select>
+      <button class="btn-secondary" id="btnVoiceTest" data-i18n="voiceTestBtn">🔊 Testen</button>
+    </div>
+    <p class="drawer-note" id="voiceNote"></p>
+  </div>
+  <div class="field">
+    <label for="inpRate"><span data-i18n="voiceRateLabel">Sprechtempo</span> <span id="rateVal" class="size-val"></span></label>
+    <input type="range" id="inpRate" min="0.5" max="1.3" step="0.05">
+  </div>
+
+  <div class="field">
+    <label for="inpFontFamily" data-i18n="fontFamilyLabel">Schriftart (Griechisch)</label>
+    <select id="inpFontFamily">
+      <option value="serif" data-i18n="fontSerif">Serif (Standard)</option>
+      <option value="sans" data-i18n="fontSans">Sans</option>
+      <option value="system" data-i18n="fontSystem">Systemschrift</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="inpWordSize"><span data-i18n="wordSizeLabel">Schriftgröße Hauptfeld</span> <span id="wordSizeVal" class="size-val"></span></label>
+    <input type="range" id="inpWordSize" min="32" max="110" step="2">
+  </div>
+  <div class="field">
+    <label for="inpExampleSize"><span data-i18n="exampleSizeLabel">Schriftgröße Beispielsätze</span> <span id="exampleSizeVal" class="size-val"></span></label>
+    <input type="range" id="inpExampleSize" min="13" max="32" step="1">
+  </div>
+
+  <div class="drawer-actions">
+    <button class="danger-btn" id="btnReset" data-i18n="resetBtn">Fortschritt zurücksetzen</button>
+    <p class="drawer-note" data-i18n="resetNote"></p>
+  </div>
+
+  <div class="drawer-actions">
+    <h2 data-i18n="exportHeading">Daten sichern</h2>
+    <div class="export-row backup-all-row">
+      <span class="export-row-label" data-i18n="backupAllLabel">Alles</span>
+      <button class="btn-secondary" id="btnBackupAll" data-i18n="exportBtn">⬇</button>
+      <button class="btn-secondary" id="btnRestoreAll" data-i18n="importBtn">⬆</button>
+    </div>
+    <input type="file" id="inpRestoreFile" accept="application/json,.json" style="display:none;">
+    <p class="drawer-note" id="backupInfo"></p>
+    <div class="export-row">
+      <span class="export-row-label" data-i18n="exportProgressLabel">Fortschritt</span>
+      <button class="btn-secondary" id="btnExportProgress" data-i18n="exportBtn">⬇</button>
+      <button class="btn-secondary" id="btnImportProgress" data-i18n="importBtn">⬆</button>
+    </div>
+    <div class="export-row">
+      <span class="export-row-label" data-i18n="exportExamplesLabel">Beispielsätze</span>
+      <button class="btn-secondary" id="btnExportExamples" data-i18n="exportBtn">⬇</button>
+      <button class="btn-secondary" id="btnImportExamples" data-i18n="importBtn">⬆</button>
+    </div>
+    <div class="export-row">
+      <span class="export-row-label" data-i18n="exportStoriesLabel">Geschichten</span>
+      <button class="btn-secondary" id="btnExportStories" data-i18n="exportBtn">⬇</button>
+      <button class="btn-secondary" id="btnImportStories" data-i18n="importBtn">⬆</button>
+    </div>
+    <input type="file" id="inpImportFile" accept="application/json,.json" style="display:none;">
+    <p class="drawer-note" data-i18n="exportNote"></p>
+  </div>
+
+  <div class="drawer-actions">
+    <h2 data-i18n="geminiHeading">Gemini API-Key (Beispielsätze &amp; Geschichten)</h2>
+    <div class="field" style="margin-bottom:0;">
+      <label for="inpGeminiKey" data-i18n="geminiKeyLabel">Gemini API-Key</label>
+      <input type="password" id="inpGeminiKey" placeholder="AIza…" autocomplete="off">
+      <a class="hint-btn get-key-btn" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" data-i18n="geminiGetKeyBtn">🔑 Kostenlosen API-Key holen (30 Sek.)</a>
+      <p class="drawer-note" data-i18n="geminiGetKeyHow"></p>
+    </div>
+    <button class="btn-secondary" id="btnSaveGeminiKey" data-i18n="geminiSaveBtn">Key speichern</button>
+    <p class="drawer-note" id="geminiModelInfo"></p>
+    <p class="drawer-note" data-i18n="geminiKeyNote"></p>
+  </div>
+</div>
+
+<script src="data/words.js"></script>
+
+<script src="js/core.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/gemini.js"></script>
+<script src="js/speech.js"></script>
+<script src="js/session.js"></script>
+<script src="js/streak.js"></script>
+<script src="js/cards.js"></script>
+<script src="js/stories.js"></script>
+<script src="js/vocab.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/backup.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/init.js"></script>
+</body>
+</html>
